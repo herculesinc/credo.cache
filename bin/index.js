@@ -16,7 +16,7 @@ exports.CacheError = CacheError;
 function connect(options, logger) {
     if (!options)
         throw TypeError('Cannot connect to Cache: options are undefined');
-    if (!options.connection)
+    if (!options.redis)
         throw TypeError('Cannot connect to Cache: connection config is undefined');
     return Promise.resolve(new RedisCache_1.RedisCache(options, logger));
 }

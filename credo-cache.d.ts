@@ -25,7 +25,7 @@ declare module "@credo/cache" {
     // --------------------------------------------------------------------------------------------
 	export interface Options {
 		name?       : string;
-        connection  : RedisConnectionConfig;
+        redis       : RedisConnectionConfig;
         logger?     : nova.Logger;
 	}
 	

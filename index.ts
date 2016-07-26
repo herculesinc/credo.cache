@@ -21,8 +21,8 @@ export interface ConnectionRetryOptions {
 }
 
 export interface Options {
-    name?           : string;
-    connection      : RedisConnectionConfig;
+    name?   : string;
+    redis   : RedisConnectionConfig;
 }
 
 // CACHE ERROR
@@ -37,6 +37,6 @@ export class CacheError extends Exception {
 // ================================================================================================
 export function connect(options: Options, logger?: Logger): Promise<RedisCache> {
     if (!options) throw TypeError('Cannot connect to Cache: options are undefined');
-    if (!options.connection) throw TypeError('Cannot connect to Cache: connection config is undefined');
+    if (!options.redis) throw TypeError('Cannot connect to Cache: connection config is undefined');
     return Promise.resolve(new RedisCache(options, logger));
 }

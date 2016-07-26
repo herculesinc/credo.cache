@@ -27,7 +27,7 @@ export class RedisCache extends events.EventEmitter {
 
         // initialize class variables
         this.name = options.name || 'cache';
-        this.client = redis.createClient(options);
+        this.client = redis.createClient(options.redis);
         this.logger = logger;
 
         // listen to error event
@@ -96,7 +96,7 @@ export class RedisCache extends events.EventEmitter {
 
                 // parse the response
                 try {
-                    var value = JSON.parse(result);
+                    var value = result ? JSON.parse(result) : undefined;
                 }
                 catch (err) {
                     this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
@@ -147,7 +147,7 @@ export class RedisCache extends events.EventEmitter {
                 this.logger && this.logger.trace(this.name, 'get', since(start));
                 
                 try {
-                    var value = JSON.parse(result);
+                    var value = result ? JSON.parse(result) : undefined;
                 }
                 catch (err) {
                     this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
@@ -163,7 +163,7 @@ export class RedisCache extends events.EventEmitter {
         const start = process.hrtime();
 
         // log the operation
-        this.logger && this.logger.debug(`Retrieving values for (${keys.length}) from the cache`);
+        this.logger && this.logger.debug(`Retrieving values for (${keys.length}) keys from the cache`);
 
         return new Promise((resolve, reject) => {
             // run the get command and return the result
@@ -181,7 +181,7 @@ export class RedisCache extends events.EventEmitter {
                 const values = [];
                 for (let result of results) {
                     try {
-                        values.push(JSON.parse(result));
+                        values.push(result ? JSON.parse(result) : undefined);
                     }
                     catch (err) {
                         this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);

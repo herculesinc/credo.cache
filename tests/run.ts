@@ -1,12 +1,12 @@
 // IMPORTS
 // ================================================================================================
-import * as cc from './../index';
+import { Cache } from './../index';
 import { MockLogger } from './mocks/Logger';
 
 // SETUP
 // ================================================================================================
 const config = {
-    name: 'testcache',
+    name        : 'testcache',
     redis: {
         host    : '',
         port    : 6379,
@@ -15,11 +15,12 @@ const config = {
     }
 };
 
+const cache = new Cache(config, new MockLogger());
+
 // TESTS
 // ================================================================================================
 async function runTests() {
-    const cache = await cc.connect(config, new MockLogger());
-
+    
     cache.set('key1', { value: 1 });
 
     let value = await cache.get('key1');

@@ -2,6 +2,7 @@ declare module "@credo/cache" {
     
     // IMPORTS
     // --------------------------------------------------------------------------------------------
+    import * as events from 'events';
     import * as nova from 'nova-base';
 
     // REDIS CONNECTION
@@ -23,17 +24,30 @@ declare module "@credo/cache" {
 
 	// CACHE
     // --------------------------------------------------------------------------------------------
-	export interface Options {
+	export interface CacheConfig {
 		name?       : string;
         redis       : RedisConnectionConfig;
-        logger?     : nova.Logger;
 	}
 	
-	export interface Cache extends nova.Cache {
-        on(event: 'error', callback: (error: Error) => void);
+	export class Cache extends events.EventEmitter implements nova.Cache {
+
+        constructor(config: CacheConfig, logger?: nova.Logger)
+
+        get(key: string): Promise<any>;
+        get(keys: string[]): Promise<any[]>;
+
+        set(key: string, value: any, expires?: number);
+        execute(script: string, keys: string[], parameters: any[]): Promise<any>;
+
+        clear(key: string);
+        clear(keys: string[]);
+
+        on(event: 'error', callback: (error: CacheError) => void);
     }
 
-	// PUBLIC FUNCTIONS
+    // CACHE
     // --------------------------------------------------------------------------------------------
-	export function connect(options: Options): Promise<Cache>;
+    export class CacheError extends nova.Exception {
+        constructor(cause: Error, message: string);
+    }
 }

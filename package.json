@@ -2,6 +2,11 @@
   "name": "@credo/cache",
   "version": "0.1.0",
   "description": "Redis Cache for Credo application",
+  "keywords": [
+    "credo",
+    "redis",
+    "cache"
+  ],
   "main": "index.js",
   "typings": "credo-cache.d.ts",
   "repository": {

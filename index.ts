@@ -5,25 +5,25 @@ import { RedisCache } from './lib/RedisCache';
 
 // INTERFACES
 // ================================================================================================
-    export interface RedisConnectionConfig {
-        host            : string;
-        port            : number;
-        password        : string;
-        prefix?         : string;
-        retry_strategy? : (options: any) => number | Error;
-    }
+export interface RedisConnectionConfig {
+    host            : string;
+    port            : number;
+    password        : string;
+    prefix?         : string;
+    retry_strategy? : (options: any) => number | Error;
+}
 
-    export interface ConnectionRetryOptions {
-        error           : Error;
-        attempt         : number;
-        total_retry_time: number;
-        times_connected : number;
-    }
+export interface ConnectionRetryOptions {
+    error           : Error;
+    attempt         : number;
+    total_retry_time: number;
+    times_connected : number;
+}
 
-	export interface Options {
-		name?           : string;
-        connection      : RedisConnectionConfig;
-	}
+export interface Options {
+    name?           : string;
+    connection      : RedisConnectionConfig;
+}
 
 // CACHE ERROR
 // ================================================================================================

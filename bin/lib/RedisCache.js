@@ -25,7 +25,7 @@ class RedisCache extends events.EventEmitter {
         // listen to error event
         this.client.on('error', (error) => {
             error = new index_1.CacheError(error, 'Unknown cache error');
-            this.emit('error', error);
+            this.emit(ERROR_EVENT, error);
         });
     }
     // PUBLIC MEMBERS

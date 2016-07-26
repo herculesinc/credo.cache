@@ -24,7 +24,7 @@ gulp.task('compile', ['clean'], function (cb) {
 // build the project
 gulp.task('build', ['compile'], function (cb) {
   gulp.src('./package.json').pipe(gulp.dest('./bin'));
-  gulp.src('./nova-server.d.ts').pipe(gulp.dest('./bin'));
+  gulp.src('./credo-cache.d.ts').pipe(gulp.dest('./bin'));
   gulp.src('./.settings/.npmignore').pipe(gulp.dest('./bin'));
   gulp.src('./README.md').pipe(gulp.dest('./bin'));
   cb();

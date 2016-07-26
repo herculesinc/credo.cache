@@ -2,7 +2,7 @@
 // ================================================================================================
 import * as events from 'events';
 import * as redis from 'redis';
-import { util, Logger } from 'nova-base';
+import { util, Logger, Cache } from 'nova-base';
 import { Options, CacheError } from './../index';
 
 // MODULE VARIABLES
@@ -12,7 +12,7 @@ const ERROR_EVENT = 'error';
 
 // REDIS CACHE CLASS
 // ================================================================================================
-export class RedisCache extends events.EventEmitter {
+export class RedisCache extends events.EventEmitter implements Cache {
 
     name    : string;
     client  : redis.RedisClient;

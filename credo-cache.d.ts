@@ -29,16 +29,7 @@ declare module "@credo/cache" {
         logger?     : nova.Logger;
 	}
 	
-	export interface Cache {
-        get(key: string): Promise<any>;
-        get(keys: string[]): Promise<any[]>;
-
-        set(key: string, value: any, expires?: number);
-        execute(script: string, keys: string[], parameters: any[]): Promise<any>;
-
-        clear(key: string);
-        clear(keys: string[]);
-
+	export interface Cache extends nova.Cache {
         on(event: 'error', callback: (error: Error) => void);
     }
 

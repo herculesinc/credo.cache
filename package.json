@@ -1,0 +1,27 @@
+{
+  "name": "@credo/cache",
+  "version": "0.1.0",
+  "description": "Redis Cache for Credo application",
+  "main": "index.js",
+  "typings": "credo-cache.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/herculesinc/credo.cache.git/"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Credo360, Inc.",
+    "email": "developers@credo360.com"
+  },
+  "engines": {
+    "node": "6.0.0"
+  },
+  "dependencies": {
+    "nova-base": "0.4.x",
+    "redis": "2.6.x"
+  },
+  "devDependencies": {
+    "del": "2.2.x",
+    "gulp": "3.9.x"
+  }
+}

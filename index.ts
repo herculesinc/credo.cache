@@ -44,7 +44,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
     constructor(config: CacheConfig, logger?: nova.Logger) {
         super();
 
-        if (!config) throw TypeError('Cannot create Cache: config undefined');
+        if (!config) throw TypeError('Cannot create Cache: config is undefined');
         if (!config.redis) throw TypeError('Cannot create Cache: redis settings are undefined');
 
         // initialize class variables
@@ -68,7 +68,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
     set(key: string, value: any, expires?: number) {
         if (!key) throw new TypeError('Cannot set cache key: key is undefined');
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Setting value for key (${key}) in the cache`);
+        this.logger && this.logger.debug(`Setting value for key (${key}) in the cache`, this.name);
 
         // convert value to string representation
         const stringValue = JSON.stringify(value);
@@ -95,7 +95,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
     execute(script: string, keys: string[] = [], parameters: string[] = []): Promise<any> {
         if (!script) throw new TypeError('Cannot execute cache script: script is undefined');
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Executing cache script`);
+        this.logger && this.logger.debug(`Executing cache script`, this.name);
 
         return new Promise((resolve, reject) => {
             // execute the script
@@ -109,7 +109,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
                     var value = result ? JSON.parse(result) : undefined;
                 }
                 catch (err) {
-                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
+                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`, this.name);
                 }
                 
                 // return the result
@@ -123,7 +123,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
         const start = process.hrtime();
         const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys];
 
-        this.logger && this.logger.debug(`Clearing values for (${keys.length}) keys from cache`);
+        this.logger && this.logger.debug(`Clearing values for (${keys.length}) keys from cache`, this.name);
 
         // execute redis del command
         this.client.del(keys, (error) => {
@@ -138,7 +138,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
     // --------------------------------------------------------------------------------------------
     private getOne(key: string): Promise<any> {
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Retrieving value for key (${key}) from the cache`);
+        this.logger && this.logger.debug(`Retrieving value for key (${key}) from the cache`, this.name);
 
         return new Promise((resolve, reject) => {
             // run the get command and return the result
@@ -152,7 +152,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
                     var value = result ? JSON.parse(result) : undefined;
                 }
                 catch (err) {
-                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
+                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`, this.name);
                 }
 
                 // return the value
@@ -163,7 +163,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
 
     private getAll(keys: string[]): Promise<any[]> {
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Retrieving values for (${keys.length}) keys from the cache`);
+        this.logger && this.logger.debug(`Retrieving values for (${keys.length}) keys from the cache`, this.name);
 
         return new Promise((resolve, reject) => {
             // run the get command and return the result
@@ -180,7 +180,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
                         values.push(result ? JSON.parse(result) : undefined);
                     }
                     catch (err) {
-                        this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
+                        this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`, this.name);
                     }
                 }
 

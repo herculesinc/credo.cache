@@ -1,9 +1,9 @@
 "use strict";
 // IMPORTS
 // ================================================================================================
-const events = require('events');
-const redis = require('redis');
-const nova = require('nova-base');
+const events = require("events");
+const redis = require("redis");
+const nova = require("nova-base");
 // MODULE VARIABLES
 // ================================================================================================
 const since = nova.util.since;
@@ -16,7 +16,7 @@ class Cache extends events.EventEmitter {
     constructor(config, logger) {
         super();
         if (!config)
-            throw TypeError('Cannot create Cache: config undefined');
+            throw TypeError('Cannot create Cache: config is undefined');
         if (!config.redis)
             throw TypeError('Cannot create Cache: redis settings are undefined');
         // initialize class variables
@@ -39,7 +39,7 @@ class Cache extends events.EventEmitter {
         if (!key)
             throw new TypeError('Cannot set cache key: key is undefined');
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Setting value for key (${key}) in the cache`);
+        this.logger && this.logger.debug(`Setting value for key (${key}) in the cache`, this.name);
         // convert value to string representation
         const stringValue = JSON.stringify(value);
         // execute redis set (or setex) command
@@ -64,7 +64,7 @@ class Cache extends events.EventEmitter {
         if (!script)
             throw new TypeError('Cannot execute cache script: script is undefined');
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Executing cache script`);
+        this.logger && this.logger.debug(`Executing cache script`, this.name);
         return new Promise((resolve, reject) => {
             // execute the script
             this.client.eval(script, keys.length, ...keys, ...parameters, (error, result) => {
@@ -76,7 +76,7 @@ class Cache extends events.EventEmitter {
                     var value = result ? JSON.parse(result) : undefined;
                 }
                 catch (err) {
-                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
+                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`, this.name);
                 }
                 // return the result
                 resolve(value);
@@ -88,7 +88,7 @@ class Cache extends events.EventEmitter {
             throw new TypeError('Cannot clear cache keys: keys are undefined');
         const start = process.hrtime();
         const keys = Array.isArray(keyOrKeys) ? keyOrKeys : [keyOrKeys];
-        this.logger && this.logger.debug(`Clearing values for (${keys.length}) keys from cache`);
+        this.logger && this.logger.debug(`Clearing values for (${keys.length}) keys from cache`, this.name);
         // execute redis del command
         this.client.del(keys, (error) => {
             this.logger && this.logger.trace(this.name, 'clear', since(start), !error);
@@ -101,7 +101,7 @@ class Cache extends events.EventEmitter {
     // --------------------------------------------------------------------------------------------
     getOne(key) {
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Retrieving value for key (${key}) from the cache`);
+        this.logger && this.logger.debug(`Retrieving value for key (${key}) from the cache`, this.name);
         return new Promise((resolve, reject) => {
             // run the get command and return the result
             this.client.get(key, (error, result) => {
@@ -113,7 +113,7 @@ class Cache extends events.EventEmitter {
                     var value = result ? JSON.parse(result) : undefined;
                 }
                 catch (err) {
-                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
+                    this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`, this.name);
                 }
                 // return the value
                 resolve(value);
@@ -122,7 +122,7 @@ class Cache extends events.EventEmitter {
     }
     getAll(keys) {
         const start = process.hrtime();
-        this.logger && this.logger.debug(`Retrieving values for (${keys.length}) keys from the cache`);
+        this.logger && this.logger.debug(`Retrieving values for (${keys.length}) keys from the cache`, this.name);
         return new Promise((resolve, reject) => {
             // run the get command and return the result
             this.client.mget(keys, (error, results) => {
@@ -137,7 +137,7 @@ class Cache extends events.EventEmitter {
                         values.push(result ? JSON.parse(result) : undefined);
                     }
                     catch (err) {
-                        this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`);
+                        this.logger && this.logger.warn(`Failed to deserialize cache value ${result}`, this.name);
                     }
                 }
                 // return the results

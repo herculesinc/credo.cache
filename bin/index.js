@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // IMPORTS
 // ================================================================================================
 const events = require("events");
@@ -8,6 +9,9 @@ const nova = require("nova-base");
 // ================================================================================================
 const since = nova.util.since;
 const ERROR_EVENT = 'error';
+const MAX_RETRY_TIME = 60000; // 1 minute
+const MAX_RETRY_INTERVAL = 3000; // 3 seconds
+const RETRY_INTERVAL_STEP = 200; // 200 milliseconds
 // CACHE CLASS
 // ================================================================================================
 class Cache extends events.EventEmitter {
@@ -21,7 +25,7 @@ class Cache extends events.EventEmitter {
             throw TypeError('Cannot create Cache: redis settings are undefined');
         // initialize class variables
         this.name = config.name || 'cache';
-        this.client = redis.createClient(config.redis);
+        this.client = redis.createClient(prepareRedisOptions(config.redis, this.name, logger));
         this.logger = logger;
         // listen to error event
         this.client.on('error', (error) => {
@@ -147,6 +151,25 @@ class Cache extends events.EventEmitter {
     }
 }
 exports.Cache = Cache;
+// HELPER FUNCTIONS
+// ================================================================================================
+function prepareRedisOptions(options, limiterName, logger) {
+    let redisOptions = options;
+    // make sure retry strategy is defined
+    if (!redisOptions.retry_strategy) {
+        redisOptions = Object.assign({}, redisOptions, { retry_strategy: function (options) {
+                if (options.error && options.error.code === 'ECONNREFUSED') {
+                    return new Error('The server refused the connection');
+                }
+                else if (options.total_retry_time > MAX_RETRY_TIME) {
+                    return new Error('Retry time exhausted');
+                }
+                logger && logger.warn('Redis connection lost. Trying to recconect', limiterName);
+                return Math.min(options.attempt * RETRY_INTERVAL_STEP, MAX_RETRY_INTERVAL);
+            } });
+    }
+    return redisOptions;
+}
 // CACHE ERROR
 // ================================================================================================
 class CacheError extends nova.Exception {

@@ -12,11 +12,11 @@ declare module "@credo/cache" {
         port            : number;
         password        : string;
         prefix?         : string;
-        retry_strategy? : (options: any) => number | Error;
+        retry_strategy? : (options: ConnectionRetryOptions) => number | Error;
     }
 
     export interface ConnectionRetryOptions {
-        error           : Error;
+        error           : any;
         attempt         : number;
         total_retry_time: number;
         times_connected : number;

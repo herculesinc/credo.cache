@@ -58,13 +58,7 @@ export class Cache extends events.EventEmitter implements nova.Cache {
 
         // listen to error event
         this.client.on('error', (error) => {
-            if (error.command === 'AUTH' && error.code === 'UNCERTAIN_STATE') {                
-                // this will be triggered on recconect attempts - do nothing
-                this.logger && logger.warn('Suppressing AUTH command error on reconnect', this.name);
-            }
-            else {
-                this.emit(ERROR_EVENT, new CacheError(error, 'Cache error'));
-            }
+            this.emit(ERROR_EVENT, new CacheError(error, 'Cache error'));
         });
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "@credo/cache",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "Redis Cache for Credo application",
   "keywords": [
     "credo",
@@ -22,7 +22,7 @@
     "node": "6.9.x"
   },
   "dependencies": {
-    "nova-base": "0.7.x",
+    "nova-base": "0.8.x",
     "redis": "2.8.x"
   },
   "devDependencies": {

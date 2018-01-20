@@ -1,6 +1,6 @@
 {
   "name": "@credo/cache",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Redis Cache for Credo application",
   "keywords": [
     "credo",
@@ -19,7 +19,7 @@
     "email": "developers@credo360.com"
   },
   "engines": {
-    "node": "6.9.x"
+    "node": "8.9.x"
   },
   "dependencies": {
     "nova-base": "0.8.x",
